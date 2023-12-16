@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Delivery Date Tracking feature provides a mechanism for tracking delivery dates in the company's internal application. Although the feature has been temporarily reverted, this documentation serves as a comprehensive guide for developers who may need to reintegrate the feature in the future and for end-users who would benefit from its functionality.
+The Delivery Date Tracking feature provides a mechanism for tracking delivery dates in the company's internal application. Although the feature has been temporarily reverted, this documentation will serve as a guide for developers who may need to reintegrate the feature in the future and for end-users who would benefit from its functionality.
 
 ## Table of Contents
 
@@ -78,6 +78,22 @@ To view delivery dates associated with records:
 
 - The `delivery_date` column was designed to store date values.
 - Ensure that relevant validations are in place to handle date inputs appropriately.
+
+## Reverting the Feature
+
+If there's a need to revert the feature:
+
+1. Follow the steps outlined
+markdown
+Copy code
+in the [Revert Section](#reverting-the-feature) of this documentation.
+2. Communicate the revert to the team, ensuring everyone is aware of the changes.
+
+## Future Development
+
+While the feature has been reverted for now, there might be future scenarios where it becomes relevant again. Keep the documentation up-to-date, and consider incorporating user feedback for improvements.
+
+---
 
 
 
