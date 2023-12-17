@@ -26,7 +26,7 @@ RUN pip install --upgrade pip setuptools
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
 # Expose port 5000 (change to your desired port)
-EXPOSE 5000
+EXPOSE 5001
 
 # Run app.py when the container launches
 CMD ["python", "app.py"]
