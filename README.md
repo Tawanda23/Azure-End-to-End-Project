@@ -39,7 +39,7 @@ For the application to succesfully run, you need to install the following packag
 
 ### Usage
 
-To run the application, you simply need to run the `app.py` script in this repository. Once the application starts you should be able to access it locally at `http://127.0.0.1:5000`. Here you will be meet with the following two pages:
+To run the application, you simply need to run the `app.py` script in this repository. Once the application starts you should be able to access it locally at `http://127.0.0.1:5001`. Here you will be meet with the following two pages:
 
 1. **Order List Page:** Navigate to the "Order List" page to view all existing orders. Use the pagination controls to navigate between pages.
 
@@ -53,9 +53,10 @@ To run the application, you simply need to run the `app.py` script in this repos
 
 - **Database:** The application employs an Azure SQL Database as its database system to store order-related data.
 
+User
 ##  Infrastructure as Code (IaC) - Networking Module
 
-## Prerequisites
+### Prerequisites
 Before prioceeding to use this module, ensure that you have the following:
 
 1. Azure CLI installed.
@@ -72,27 +73,51 @@ This module creates the following Azure resources:
 - Network Security Group (NSG)
 
 ### Input Variables
-**resource_group_name** - Azure Resource Group name
-**location** - Azure region where resources are to be provisioned
-**vnet_address_space** - Virtual Network Address Space
+- **resource_group_name** - Azure Resource Group name
+- **location** - Azure region where resources are to be provisioned
+- **vnet_address_space** - Virtual Network Address Space
 
 ### Output Variables
-**resource_group_name** - Resource Group name
-
-**worker_node_subnet_id** - Worker Node ID
-
-**control_plane_subnet_id** - Control Plane ID
-
-**vnet_id** - Virtual Network ID
-
-**aks_nsg_id** - Network Security Group ID
+- **resource_group_name** - Resource Group name
+- **worker_node_subnet_id** - Worker Node ID
+- **control_plane_subnet_id** - Control Plane ID
+- **vnet_id** - Virtual Network ID 
+- **aks_nsg_id** - Network Security Group ID
 
 
+## Infrastructure as Code (IaC) - AKS Cluster Module
+
+### Module Structure
+This module creates the following Azure resources:
+
+- Azure Resource Group
+- Virtual Network
+- Subnets (Worker Node and Control Plane)
+- Network Security Group (NSG)
+
+
+### Input Variables
+- **aks_cluster_name** - Name of the AKS cluster.
+- **cluster_location** - Azure region where the AKS cluster will be deployed.
+- **dns_prefix** - DNS prefix of the cluster.
+- **kubernetes_version**  - Kubernetes version for the AKS cluster.
+- **service_principal_client_id** - Client ID for the service principal associated with the cluster.
+- **service_principal_secret** - Client Secret for the service principal.
+- **resource_group_name** - Resource Group name.
+- **worker_node_subnet_id** - Worker Node Subnet ID.
+- **control_plane_subnet_id** - Control Plane Subnet ID.
+- **vnet_id** - Virtual Network ID.
+
+
+### Output Variables
+- **aks_cluster_name** - The name of the aks-cluster
+- **aks_cluster_id** - The id of the aks-cluster
+- **aks_kubeconfig** - The name of the kubenetes configuration
 
 
 ## Contributors 
 
-- [Tawanda Mafukidze]
+- [Tawanda Mafukidze]([https://github.com/yourusername](https://github.com/Tawanda23))
 - [Maya Iuga]([https://github.com/yourusername](https://github.com/maya-a-iuga))
 
 ## License
