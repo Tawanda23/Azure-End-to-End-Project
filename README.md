@@ -53,8 +53,46 @@ To run the application, you simply need to run the `app.py` script in this repos
 
 - **Database:** The application employs an Azure SQL Database as its database system to store order-related data.
 
+##  Infrastructure as Code (IaC) - Networking Module
+
+## Prerequisites
+Before prioceeding to use this module, ensure that you have the following:
+
+1. Azure CLI installed.
+2. Azure subscription and appropriate permissions.
+3. Terraform installed.
+
+### Module Structure
+
+This module creates the following Azure resources:
+
+- Azure Resource Group
+- Virtual Network
+- Subnets (Worker Node and Control Plane)
+- Network Security Group (NSG)
+
+### Input Variables
+**resource_group_name** - Azure Resource Group name
+**location** - Azure region where resources are to be provisioned
+**vnet_address_space** - Virtual Network Address Space
+
+### Output Variables
+**resource_group_name** - Resource Group name
+
+**worker_node_subnet_id** - Worker Node ID
+
+**control_plane_subnet_id** - Control Plane ID
+
+**vnet_id** - Virtual Network ID
+
+**aks_nsg_id** - Network Security Group ID
+
+
+
+
 ## Contributors 
 
+- [Tawanda Mafukidze]
 - [Maya Iuga]([https://github.com/yourusername](https://github.com/maya-a-iuga))
 
 ## License
