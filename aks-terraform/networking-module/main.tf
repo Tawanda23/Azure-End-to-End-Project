@@ -1,3 +1,10 @@
+#main.tf/networking
+
+resource "azurerm_resource_group" "networking" {
+  name = var.resource_group_name
+  location = var.location
+}
+
 # Define the Virtual Network (VNet) for the AKS cluster
 resource "azurerm_virtual_network" "aks_vnet" {
   name                = "aks-vnet"
@@ -28,7 +35,7 @@ resource "azurerm_network_security_group" "aks_nsg" {
   resource_group_name = azurerm_resource_group.networking.name
 }
 
-# Allow inbound traffic to kube-apiserver (TCP/443) from your public IP address
+# Allow inbound traffic to kube-apiserver (TCP/443) from public IP address
 resource "azurerm_network_security_rule" "kube_apiserver_rule" {
   name                        = "kube-apiserver-rule"
   priority                    = 1001
@@ -37,7 +44,7 @@ resource "azurerm_network_security_rule" "kube_apiserver_rule" {
   protocol                    = "Tcp"
   source_port_range           = "*"
   destination_port_range      = "443"
-  source_address_prefix       = "82.71.13.229"  # Replace with your public IP or IP range
+  source_address_prefix       = "82.71.13.229"  
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.networking.name
   network_security_group_name = azurerm_network_security_group.aks_nsg.name
@@ -52,7 +59,7 @@ resource "azurerm_network_security_rule" "ssh_rule" {
   protocol                    = "Tcp"
   source_port_range           = "*"
   destination_port_range      = "22"
-  source_address_prefix       = "82.71.13.229"  # Replace with your public IP or IP range
+  source_address_prefix       = "82.71.13.229"  
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.networking.name
   network_security_group_name = azurerm_network_security_group.aks_nsg.name
