@@ -22,5 +22,5 @@ output "resource_group_name" {
 
 output "aks_nsg_id" {
     description = "The ID of the NSG for AKS"
-    value       = azurerm_network_security_group.aks_nsg
+    value       = azurerm_network_security_group.aks_nsg.id
 }
