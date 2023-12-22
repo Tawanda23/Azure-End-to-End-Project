@@ -20,4 +20,11 @@ steps:
 - task: Docker@2
   inputs:
     command: 'build'
-    Dockerfile: '**/'
+    Dockerfile: '**/Dockerfile'
+    tags: 'docker.io/tawanda23/my-app:$(Build.BuildId)'
+
+- task: Docker@2
+  inputs:
+    command: 'push'
+    tags: 'docker.io/tawanda23/my-app:$(Build.BuildId)' 
+
