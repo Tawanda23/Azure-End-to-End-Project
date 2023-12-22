@@ -26,10 +26,8 @@ steps:
 - script: |
     docker pull docker.io/tawanda23/my-app:latest
 
-    
     docker run -d -p 50001:5000 --name my-app-container docker.io/tawanda23/my-app:latest
 
-    
     sleep 10 #waits for container to start
 
     curl http://localhost:5001
