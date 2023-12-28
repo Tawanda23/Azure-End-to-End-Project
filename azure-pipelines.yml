@@ -9,29 +9,14 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+variables:
+  containerName: 'my-app'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+steps:
 - task: Docker@2
   inputs:
-    command: 'build'
+    containerRegistry: 'Docker Hub'
+    repository: 'tawanda23/my-app'
+    command: 'buildAndPush'
     Dockerfile: '**/Dockerfile'
-    tags: 1.0-slim
-
-- script: |
-    docker pull docker.io/tawanda23/my-app:1.0-slim
-
-    docker run -d -p 50001:5000 --name my-app-container docker.io/tawanda23/my-app:1.0-slim
-
-    sleep 10 #waits for container to start
-
-    curl http://localhost:5001
-
-    docker stop my-app-container
-    docker rm my-app-container
-  displayName: 'Test Docker Image'
+    tags: 'latest'
