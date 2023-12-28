@@ -17,3 +17,15 @@ steps:
     Dockerfile: '**/Dockerfile'
     tags: 'latest'
 
+
+- task: Kubernetes@1
+  inputs:
+    connectionType: 'Kubernetes Service Connection'
+    kubernetesServiceEndpoint: 'AKS DevOps'
+    namespace: 'DevOps AKS'
+    command: 'apply'
+    useConfigurationFile: true
+    configuration: 'aks-terraform/application-manifest.yaml'
+    secretType: 'dockerRegistry'
+    containerRegistryType: 'Azure Container Registry'
+    azureSubscriptionEndpointForSecrets: 'Tawanda Mafukidze DevOps(60c8c8a1-0483-4b2e-a83e-b6a5cccda4ca)'
