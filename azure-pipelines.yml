@@ -19,13 +19,16 @@ steps:
 
 
 - task: Kubernetes@1
+  displayName: 'Deploy to AKS'
   inputs:
     connectionType: 'Kubernetes Service Connection'
-    kubernetesServiceEndpoint: 'AKS DevOps'
-    namespace: 'DevOps AKS'
+    kubernetesServiceEndpoint: 'AKS DevOps'  
+    namespace: 'Devops AKS'  
     command: 'apply'
     useConfigurationFile: true
-    configuration: 'aks-terraform/application-manifest.yaml'
+    configurationType: 'filePath'
+    filePath: '**/aks-terraform/application-manifest.yaml'  
     secretType: 'dockerRegistry'
     containerRegistryType: 'Azure Container Registry'
-    azureSubscriptionEndpointForSecrets: 'Tawanda Mafukidze DevOps(60c8c8a1-0483-4b2e-a83e-b6a5cccda4ca)'
+    containerRegistry: 'Docker Hub'
+    dockerRegistryEndpoint: 'Docker Hub'
