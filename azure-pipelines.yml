@@ -17,11 +17,11 @@ steps:
     Dockerfile: '**/Dockerfile'
     tags: 'latest'
 
-
 - task: KubernetesManifest@1
   inputs:
     action: 'deploy'
     connectionType: 'azureResourceManager'
+    azureSubscriptionConnection: 'Tawanda Mafukidze DevOps(60c8c8a1-0483-4b2e-a83e-b6a5cccda4ca)'
     azureResourceGroup: 'aks-networking-resource-group'
     kubernetesCluster: 'terraform-aks-cluster'
     manifests: 'application-manifest.yaml'
