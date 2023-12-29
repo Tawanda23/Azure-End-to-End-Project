@@ -30,7 +30,7 @@ metadata:
   name: flask-app-service
 spec:
   selector:
-    app: nflask-app
+    app: flask-app
   ports:
     - protocol: TCP
       port: 80 
