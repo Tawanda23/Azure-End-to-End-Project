@@ -4,9 +4,35 @@ Welcome to the Web App DevOps Project repo! This application allows you to effic
 
 ## Table of Contents
 
-- [Features](#features)
-- [Getting Started](#getting-started)
-- [Technology Stack](#technology-stack)
+- - [Web-App-DevOps-Project](#web-app-devops-project)
+  - [Features](#features)
+  - [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Usage](#usage)
+  - [Technology Stack](#technology-stack)
+- [Containerization Process](#containerization-process)
+  - [Creating Dockerfile](#creating-dockerfile)
+  - [Docker Image Build](#docker-image-build)
+  - [Running the Docker Container Locally](#running-the-docker-container-locally)
+  - [Tagging Docker Image](#tagging-docker-image)
+  - [Pushing Docker Image to Docker Hub](#pushing-docker-image-to-docker-hub)
+  - [Pulling and Running Docker Image from Docker Hub](#pulling-and-running-docker-image-from-docker-hub)
+  - [Image Information](#image-information)
+- [Infrastructure as Code (IaC) - Networking Module](#infrastructure-as-code-iac---networking-module)
+    - [Prerequisites](#prerequisites-1)
+    - [Module Structure](#module-structure)
+    - [Input Variables](#input-variables)
+    - [Output Variables](#output-variables)
+- [Infrastructure as Code (IaC) - AKS Cluster Module](#infrastructure-as-code-iac---aks-cluster-module)
+    - [Module Structure](#module-structure-1)
+    - [Input Variables](#input-variables-1)
+    - [Output Variables](#output-variables-1)
+- [Kubernetes Deployment for Flask Web Application](#kubernetes-deployment-for-flask-web-application)
+  - [Deployment and Service Manifests](#deployment-and-service-manifests)
+    - [Deployment Manifest (`application-manifest.yaml`)](#deployment-manifest-application-manifestyaml)
+  - [Deployment Strategy](#deployment-strategy)
+  - [Testing and Validation](#testing-and-validation)
+  - [Distribution Plan](#distribution-plan)
 - [Contributors](#contributors)
 - [License](#license)
 
@@ -53,7 +79,55 @@ To run the application, you simply need to run the `app.py` script in this repos
 
 - **Database:** The application employs an Azure SQL Database as its database system to store order-related data.
 
-User
+## Containerization Process
+
+### Creating Dockerfile
+
+- **Base Image Selection:** Chose `python:3.8-slim` 
+- **Working Directory Setup:** Used `WORKDIR /app` to set the working directory inside the container to `/app`.
+- **Copying Application Files:** Used `COPY app.py requirements.txt /app/` to copy application files.
+- **System Dependencies and ODBC Driver Installation:** Installed necessary dependencies, ODBC driver, and updated system packages.
+- **Python Packages Installation:** Used `pip install -r requirements.txt` to install all the required Python packages.
+- **Port Exposure:** Exposed port 5001 using `EXPOSE 5001`.
+- **Startup Command:** Set the startup command as `CMD ["python", "app.py"]` to run the Flask application.
+
+### Docker Image Build
+```bash
+docker build -t my-flask-app:1.0 .
+```
+### Running the Docker Container Locally
+```bash
+docker run -p 5001:5000 my-flask-app
+```
+### Tagging Docker Image
+```bash
+docker tag my-flask-app yourusername/my-flask-app:1.0
+```
+### Pushing Docker Image to Docker Hub
+```bash
+docker push yourusername/my-flask-app:1.0
+```
+### Pulling and Running Docker Image from Docker Hub
+```bash
+docker pull yourusername/my-flask-app:1.0
+docker run -p 5001:5000 yourusername/my-flask-app:1.0
+```
+### Image Information
+**Docker Image Name:** yourusername/my-flask-app
+
+Tags: 1.0
+
+Docker Hub Repository: 
+
+**Instructions for Use:**
+
+- Pull the image: **docker pull yourusername/my-flask-app:1.0**
+- Run the container: **docker run -p** `5001:5000` **yourusername/my-flask-app:1.0**
+- Application can be accessed at http://127.0.0.1:5001
+
+This documentation provides a detailed guide on the containerization process, Docker commands, and essential information about the Docker image. Commands and information can be adjusted inline with your specific project details.
+
+
 ##  Infrastructure as Code (IaC) - Networking Module
 
 ### Prerequisites
@@ -62,7 +136,7 @@ Before prioceeding to use this module, ensure that you have the following:
 1. Azure CLI installed.
 2. Azure subscription and appropriate permissions.
 3. Terraform installed.
-
+   
 ### Module Structure
 
 This module creates the following Azure resources:
@@ -113,6 +187,84 @@ This module creates the following Azure resources:
 - **aks_cluster_name** - The name of the aks-cluster
 - **aks_cluster_id** - The id of the aks-cluster
 - **aks_kubeconfig** - The name of the kubenetes configuration
+
+
+## Kubernetes Deployment for Flask Web Application
+This repository contains the Kubernetes manifests and deployment scripts for deploying a Flask web application on Azure Kubernetes Service (AKS). The deployment is orchestrated using Terraform to provision the AKS cluster and Kubernetes manifests for application deployment.
+
+### Deployment and Service Manifests
+
+### Deployment Manifest (`application-manifest.yaml`)
+
+The Deployment manifest (`application-manifest.yaml`) defines the key parameters for deploying the Flask web application:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-app-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: flask-app
+  template:
+    metadata:
+      labels:
+        app: flask-app
+    spec:
+      containers:
+      - name: flask-app-container
+        image: <your-dockerhub-username>/flask-app:latest
+        ports:
+        - containerPort: 5001
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-app-service
+spec:
+  selector:
+    app: flask-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+  type: LoadBalancer
+
+```
+
+### Deployment Strategy
+The chosen deployment strategy is Rolling Updates. This strategy ensures seamless application updates with a controlled rollout. During updates, one pod is deployed while another becomes temporarily unavailable, maintaining high availability. This strategy aligns with our application's requirements for reliability and minimal downtime.
+
+### Testing and Validation
+After deployment, the following tests were conducted to ensure application functionality and reliability:
+
+1. **Pod Status Check:**
+    - Used kubectl get pods to verify that pods are in the "Running" state.
+
+2. **Service Availability Check:**
+    - Used kubectl get services to verify that the service is available and has an external IP.
+
+3. **Application Access Test:**
+    - Accessed the application using the external IP to ensure that the web application is reachable.
+
+4. **Logs Inspection:**
+    - Used kubectl logs <pod-name> to inspect logs from the running pods for any errors.
+
+### Distribution Plan
+**Internal Distribution:**
+For the application to be accessible to internal team members without relying on port forwarding, we plan to create an Ingress resource and configure domain names. This will provide a more user-friendly access mechanism.
+
+**External Distribution:**
+For external access, we will implement secure access mechanisms, such as Ingress with TLS termination. Additionally, consider setting up Azure AD authentication for secure access.
 
 
 ## Contributors 
