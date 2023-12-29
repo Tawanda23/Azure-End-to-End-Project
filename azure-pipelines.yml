@@ -18,17 +18,10 @@ steps:
     tags: 'latest'
 
 
-- task: Kubernetes@1
-  displayName: 'Deploy to AKS'
+- task: KubernetesManifest@1
   inputs:
-    connectionType: 'Kubernetes Service Connection'
-    kubernetesServiceEndpoint: 'AKS DevOps'  
-    namespace: 'Devops AKS'  
-    command: 'apply'
-    useConfigurationFile: true
-    configurationType: 'filePath'
-    filePath: '**/aks-terraform/application-manifest.yaml'  
-    secretType: 'dockerRegistry'
-    containerRegistryType: 'Azure Container Registry'
-    containerRegistry: 'Docker Hub'
-    dockerRegistryEndpoint: 'Docker Hub'
+    action: 'deploy'
+    connectionType: 'azureResourceManager'
+    azureResourceGroup: 'aks-networking-resource-group'
+    kubernetesCluster: 'terraform-aks-cluster'
+    manifests: 'application-manifest.yaml'
