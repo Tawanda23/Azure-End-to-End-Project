@@ -261,10 +261,178 @@ After deployment, the following tests were conducted to ensure application funct
 
 ### Distribution Plan
 **Internal Distribution:**
-For the application to be accessible to internal team members without relying on port forwarding, we plan to create an Ingress resource and configure domain names. This will provide a more user-friendly access mechanism.
+For the application to be accessible to internal team members without the reliance on port forwarding, the plan is to create an Ingress resource and configure domain names. This will provide a more user-friendly access mechanism.
 
 **External Distribution:**
 For external access, we will implement secure access mechanisms, such as Ingress with TLS termination. Additionally, consider setting up Azure AD authentication for secure access.
+
+
+## Continuous Integration and Continuous Deployment (CI/CD) Pipeline
+
+This section provides a comprehensive informative detail about the Azure CI/CD pipeline used for building, testing, and deploying the application in Azure DevOps.
+
+## CI/CD Pipeline Configuration
+
+### Source Repository
+
+The source code for this project is hosted on [GitHub](https://github.com/Tawanda23/DevOps-Project.git). The main branch is configured as the trigger for the Azure CI/CD pipeline.
+
+### Build Pipeline
+
+The build pipeline is defined in the `application-manifest.yaml` file. It includes the following configurations:
+
+- **Trigger:** The pipeline is triggered on commits to the main branch.
+- **Pool:** The build is executed on an Ubuntu latest VM image.
+- **Steps:**
+  - Docker Build: Builds the Docker image using the specified Dockerfile.
+  - Publish Build Artifacts: Publishes the Docker image as a build artifact.
+
+### Release Pipeline
+
+The release pipeline is defined in the Azure DevOps portal. It will include the following configurations:
+
+- **Artifact:** The artifact is sourced from the build pipeline.
+- **Stages:**
+  - **Dev Environment:**
+    - Docker Registry Connection: Configured to use Docker Hub.
+    - Kubernetes Service Connection: Configured to use the AKS DevOps service connection.
+    - Deploy to Kubernetes Task: Deploys the application to the AKS cluster.
+
+
+### Docker Hub Integration
+
+The Docker image is pushed to [Docker Hub](https://hub.docker.com/tawanda23/my-app:1.0-slim) as part of the build process.
+
+### AKS Integration
+
+The application will be deployed to an Azure Kubernetes Service (AKS) cluster. AKS DevOps service connection will be used for authentication.
+
+## Validation Steps
+
+To check the validity and the functionality of the CI/CD pipeline, the following steps were performed:
+
+1. **Monitoring Pod Status:**
+   - Executed `kubectl get pods -n <your-namespace>` to ensure pods are in the "Running".
+
+2. **Port Forwarding:**
+   - Used `kubectl port-forward` to forward a local port to a pod for testing purposes.
+
+3. **Testing Application Functionality:**
+   - Accessed the application at the locally exposed address (e.g., http://localhost:5001).
+   - Tested various functionalities to ensure proper operation.
+
+4. **Cleanup:**
+   - Stopped port forwarding using `Ctrl + C` when testing was complete.
+
+### Issues Encountered
+
+- Encountered issues with connecting to the host network. This was rectified by ensuring the yaml file was correctly configured
+
+### Contributing
+
+If you encounter any issues or have suggestions for improvement, please open an issue or submit a pull request.
+
+## AKS Cluster Monitoring 
+
+### Metrics Explorer Charts
+
+1. **Average Node CPU Usage Percentage per Minute:**
+   - **Metric:** `KubeNodeCpuUsageCoreNanoSeconds`
+   - **Aggregation:** `Average`
+   - **Significance:** Monitors the average CPU usage across AKS nodes. High values may indicate resource contention.
+
+2. **Average Node Memory Usage Percentage per Minute:**
+   - **Metric:** `KubeNodeMemoryWorkingSetBytes`
+   - **Aggregation:** `Average`
+   - **Significance:** Monitors average memory working set across AKS nodes. High values suggest increased memory consumption.
+
+3. **Used Disk Percentage:**
+   - **Metric:** `KubeNodeFilesystemUsagePercent`
+   - **Aggregation:** `Average`
+   - **Significance:** Monitors the percentage of used disk space on nodes.
+
+4. **Bytes Read and Written per Second:**
+   - **Metric:** `KubeNodeDiskIo`
+   - **Aggregation:** `Sum`
+   - **Significance:** Monitors data I/O rates on nodes.
+
+### Log Analytics Logs
+
+1. **Average Node CPU Usage Logs:**
+   - **Query:**
+     ```kql
+     Perf | where ObjectName == "K8SNode" and CounterName == "cpuUsageNanoCores" | summarize AvgCpuUsagePercentage = avg(CounterValue / 10000000) by bin(TimeGenerated, 1m)
+     ```
+   - **Significance:** Provides historical CPU usage data for all nodes.
+
+2. **Average Node Memory Usage Logs:**
+   - **Query:**
+     ```kql
+     Perf | where ObjectName == "K8SNode" and CounterName == "memoryRssBytes" | summarize AvgMemoryUsagePercentage = avg(CounterValue / 1024 / 1024 / 1024 * 100) by bin(TimeGenerated, 1m)
+     ```
+   - **Significance:** Provides historical memory usage data for the nodes.
+
+3. **Used Disk Percentage Logs:**
+   - **Query:**
+     ```kql
+     Perf | where ObjectName == "K8SNode" and CounterName == "filesystemUsagePercent" | summarize AvgDiskUsagePercentage = avg(CounterValue) by bin(TimeGenerated, 1m)
+     ```
+   - **Significance:** Provides historical disk usage data for nodes.
+
+4. **Bytes Read and Written Logs:**
+   - **Query:**
+     ```kql
+     Perf | where ObjectName == "K8SNode" and CounterName == "diskIo"
+     ```
+   - **Significance:** Provides historical data I/O metrics for nodes.
+
+### Alarm Configurations
+
+1. **CPU Usage Alarm:**
+   - **Condition:** Greater than 80%
+   - **Period:** 5 minutes
+   - **Loopback Period:** 15 minutes
+   - **Action:** Email notification
+
+2. **Memory Usage Alarm:**
+   - **Condition:** Greater than 80%
+   - **Period:** 5 minutes
+   - **Loopback Period:** 15 minutes
+   - **Action:** Email notification
+
+3. **Disk Usage Alarm:**
+   - **Condition:** Greater than 90%
+   - **Period:** 5 minutes
+   - **Loopback Period:** 15 minutes
+   - **Action:** Email notification
+
+### Response Strategies
+
+1. **CPU/Memory Alerts:**
+   - **Scale Resources:** Increase node capacity or consider horizontal scaling.
+   - **Optimize Workloads:** Review and optimize resource-intensive workloads.
+   - **Troubleshoot:** Investigate specific pods causing high memory usage.
+
+2. **Disk Usage Alerts:**
+   - **Scale Resources:** Add more nodes to the cluster.
+   - **Cleanup Unused Data:** Delete unnecessary files or containers.
+   - **Review Storage Configuration:** Storage settings optimisation.
+
+3. **I/O Metrics Alerts:**
+   - **Review Workload:** Identify and optimize data-intensive processes.
+   - **Scale Storage:** Consider increasing storage capacity.
+   - **Review Disk Performance:** Investigate the possibility of certain disks causing bottlenecks.
+
+4. **Email Notifications:**
+   - **Immediate Investigation:** Respond promptly to emails indicating alerts.
+   - **Review Metrics and Logs:** Analyze Metrics Explorer charts and Log Analytics logs for detailed insights.
+   - **Implement Fixes:** If issues have been identified, apply the necessary fixes based on the identified issues.
+
+
+
+
+
+
 
 
 ## Contributors 
