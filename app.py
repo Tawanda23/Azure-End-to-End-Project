@@ -26,22 +26,6 @@ secret = secret_client.get_secret("secret-name")
 # Access the secret values
 secret_value = secret.value
 
-server = 'devops-project-server.database.windows.net'
-database = 'orders-db'
-username = 'maya'
-password = 'AiCore1237'
-driver= '{ODBC Driver 18 for SQL Server}'
-
-# Create the connection string
-connection_string=f'Driver={driver};\
-    Server=tcp:{server},1433;\
-    Database={database};\
-    Uid={username};\
-    Pwd={password};\
-    Encrypt=yes;\
-    TrustServerCertificate=no;\
-    Connection Timeout=30;'
-
 # Create the engine to connect to the database
 engine = create_engine("mssql+pyodbc:///?odbc_connect={}".format(connection_string))
 engine.connect()
