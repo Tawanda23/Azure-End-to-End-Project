@@ -1,6 +1,6 @@
 # Web-App-DevOps-Project
 
-Welcome to the Web App DevOps Project repo! This application allows you to efficiently manage and track orders for a potential business. It provides an intuitive user interface for viewing existing orders and adding new ones.
+Welcome to the Web App DevOps Project repo! This application allows you to efficiently manage and track orders for a potential business. It provides an intuitive user interface for viewing existing orders and adding new ones. 
 
 ## Table of Contents
 
@@ -10,6 +10,12 @@ Welcome to the Web App DevOps Project repo! This application allows you to effic
     - [Prerequisites](#prerequisites)
     - [Usage](#usage)
   - [Technology Stack](#technology-stack)
+- [Delivery Date Tracking](#delivery-date-tracking)
+    - [Key Components](#key-components)
+    - [How It Works](#how-it-works)
+    - [Integration Steps](#integration-steps)
+    - [Reverting the Feature](#reverting-the-feature)
+    - [Future Development](#future-development)
 - [Containerization Process](#containerization-process)
   - [Creating Dockerfile](#creating-dockerfile)
   - [Docker Image Build](#docker-image-build)
@@ -78,6 +84,86 @@ To run the application, you simply need to run the `app.py` script in this repos
 - **Frontend:** The user interface is designed using HTML, CSS, and JavaScript to ensure a smooth and intuitive user experience.
 
 - **Database:** The application employs an Azure SQL Database as its database system to store order-related data.
+
+## Delivery Date Tracking
+
+The Delivery Date Tracking feature provides a mechanism for tracking delivery dates in the company's internal application. Although the feature has been temporarily reverted, this documentation will serve as a guide for developers who may need to reintegrate the feature in the future and for end-users who would benefit from its functionality.
+
+The Delivery Date Tracking feature improves the application by allowing users to associate delivery dates with specific records.
+
+### Key Components
+
+- **Delivery Date Column:** A database column (`delivery_date`) was added to the backend Azure SQL Database to store delivery dates.
+
+### How It Works
+
+The feature operates by adding a new column to the database schema, allowing users to input and retrieve delivery dates for relevant records.
+
+### Integration Steps
+
+If you plan to reintegrate the feature in the future, follow these steps:
+
+1. **Branching:**
+   - Create a new branch for feature development based on the `main` branch.
+   - Make changes to the code base to accommodate the feature.
+
+2. **Database Update:**
+   - Ensure that the `delivery_date` column is added to the backend Azure SQL Database with the appropriate data type.
+
+3. **Code Modifications:**
+   - Integrate code changes to handle the new feature.
+   - Update any relevant documentation to reflect the changes made.
+
+4. **Testing:**
+   - Thoroughly test the feature to ensure proper functionality.
+
+5. **Documentation:**
+   - Update or create documentation to reflect the changes made and guide users and developers on using the feature.
+
+6. **Pull Request:**
+   - Create a pull request for the new feature branch, ensuring that the changes are reviewed and approved.
+
+7. **Merge:**
+   - After approval, merge the feature branch into the `main` branch.
+
+
+## Usage Guide for End-Users
+
+### Adding Delivery Dates
+
+To add a delivery date to a record:
+
+1. Navigate to the relevant section of the application.
+2. Locate the record for which you want to add a delivery date.
+3. Edit the record and find the "Delivery Date" field.
+4. Input the desired delivery date.
+5. Save the changes.
+
+### Retrieving Delivery Dates
+
+To view delivery dates associated with records:
+
+1. Access the record or report section.
+2. Look for the "Delivery Date" field in the record details.
+
+### Considerations
+
+- The `delivery_date` column was designed to store date values.
+- Ensure that relevant validations are in place to handle date inputs appropriately.
+
+### Reverting the Feature
+
+If there's a need to revert the feature:
+
+1. Follow the steps outlined
+markdown
+Copy code
+in the [Revert Section](#reverting-the-feature) of this documentation.
+2. Communicate the revert to the team, ensuring everyone is aware of the changes.
+
+### Future Development
+
+While the feature has been reverted for now, there might be future scenarios where it becomes relevant again. Keep the documentation up-to-date, and consider incorporating user feedback for improvements.
 
 ## Containerization Process
 
@@ -182,12 +268,10 @@ This module creates the following Azure resources:
 - **control_plane_subnet_id** - Control Plane Subnet ID.
 - **vnet_id** - Virtual Network ID.
 
-
 ### Output Variables
 - **aks_cluster_name** - The name of the aks-cluster
 - **aks_cluster_id** - The id of the aks-cluster
 - **aks_kubeconfig** - The name of the kubenetes configuration
-
 
 ## Kubernetes Deployment for Flask Web Application
 This repository contains the Kubernetes manifests and deployment scripts for deploying a Flask web application on Azure Kubernetes Service (AKS). The deployment is orchestrated using Terraform to provision the AKS cluster and Kubernetes manifests for application deployment.
@@ -429,17 +513,9 @@ If you encounter any issues or have suggestions for improvement, please open an 
    - **Implement Fixes:** If issues have been identified, apply the necessary fixes based on the identified issues.
 
 
-
-
-
-
-
-
 ## Contributors 
-
 - [Tawanda Mafukidze]([https://github.com/yourusername](https://github.com/Tawanda23))
 - [Maya Iuga]([https://github.com/yourusername](https://github.com/maya-a-iuga))
 
 ## License
-
 This project is licensed under the MIT License. For more details, refer to the [LICENSE](LICENSE) file.
