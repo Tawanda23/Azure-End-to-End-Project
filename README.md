@@ -35,10 +35,14 @@ Welcome to the Web App DevOps Project repo! This application allows you to effic
     - [Output Variables](#output-variables-1)
 - [Kubernetes Deployment for Flask Web Application](#kubernetes-deployment-for-flask-web-application)
   - [Deployment and Service Manifests](#deployment-and-service-manifests)
-    - [Deployment Manifest (`application-manifest.yaml`)](#deployment-manifest-application-manifestyaml)
+   
   - [Deployment Strategy](#deployment-strategy)
   - [Testing and Validation](#testing-and-validation)
   - [Distribution Plan](#distribution-plan)
+- [Secrets Management and AKS Integration with Azure Key Vault](#secrets-management-and-aks-integration-with-azure-key-vault)
+  - [Azure Key Vault Setup](#azure-key-vault-setup)
+  - [Stored Secrets](#stored-secrets)
+  - [AKS Integration](#aks-integration)
 - [Contributors](#contributors)
 - [License](#license)
 
@@ -512,6 +516,83 @@ If you encounter any issues or have suggestions for improvement, please open an 
    - **Review Metrics and Logs:** Analyze Metrics Explorer charts and Log Analytics logs for detailed insights.
    - **Implement Fixes:** If issues have been identified, apply the necessary fixes based on the identified issues.
 
+
+## Secrets Management and AKS Integration with Azure Key Vault
+
+### Azure Key Vault Setup
+
+#### Key Vault Creation
+
+1. **Create Key Vault:**
+   - Navigate to the [Azure Portal](https://portal.azure.com/).
+   - Search for Key Vaults.
+   - Click on "Add" to create a new Key Vault.
+   - Fill in the required details, including Key Vault name, resource group, and region.
+   - Review and create the Key Vault.
+
+### Permissions and Roles
+
+2. **Assign Permissions:**
+   - Once the Key Vault is created, assign the necessary permissions. This project requires the Administrator Role permissions
+   - Add the appropriate roles to ensure secure and efficient management:
+     - `Key Vault Secrets Officer` for secret management.
+    
+
+## Stored Secrets
+
+### Database Connection Details
+
+3. **Database Connection String:**
+   - Store the database connection string as a secret in Key Vault. 
+   - Use a secret name like that is descriptive
+   - This secret contains the necessary credentials required by the application to connect to the database.
+
+### Application Secrets
+
+4. **Other Application Secrets:**
+   - Identify other application-specific secrets and store them in Key Vault.
+   - For example, API keys, encryption keys, or any sensitive information used by the application.
+
+## AKS Integration
+
+### Managed Identity for AKS
+
+5. **Enable Managed Identity:**
+   - Enable managed identity can be done during the AKS creation or by updating the AKS cluster.
+   - The managed identity allows AKS to authenticate securely with Azure services.
+
+### Permissions Assignment
+
+6. **Assign Permissions to Managed Identity:**
+   - In the Azure Key Vault Access policies, add an access policy for the managed identity of the AKS cluster.
+   - Assign the `Key Vault Secrets Officer` role to ensure the AKS cluster can manage and retrieve secrets from Key Vault.
+
+### Application Code Modification
+
+7. **Integrate Managed Identity Credentials:**
+   - Application code will need to be modified to incorporate managed identity credentials for the secure retrieval of secrets from the Key Vault.
+   - Update the code that connects to the database to use the secret retrieved from Key Vault using the sample code below:
+
+```python
+from azure.identity import ManagedIdentityCredential
+from azure.keyvault.secrets import SecretClient
+
+# Replace these values with your Key Vault details
+key_vault_url = "https://your-key-vault-name.vault.azure.net/"
+
+# Set up Azure Key Vault client with Managed Identity
+credential = ManagedIdentityCredential()
+secret_client = SecretClient(vault_url=key_vault_url, credential=credential)
+
+# Access the secret values from Key Vault
+secret = secret_client.get_secret("secret-name")
+
+# Access the secret values
+secret_value = secret.value
+
+# Your application code can now use the retrieved secrets securely
+
+```
 
 ## Contributors 
 - [Tawanda Mafukidze]([https://github.com/yourusername](https://github.com/Tawanda23))
