@@ -11,10 +11,10 @@ terraform {
 
 provider "azurerm" {
   features {}
-  client_id       = ""
-  client_secret   = ""
-  subscription_id = ""
-  tenant_id       = ""
+  client_id       = var.AZ_client_id
+  client_secret   = var.AZ_client_secret_id
+  subscription_id = var.AZ_subscription_id
+  tenant_id       = var.AZ_tenant_id
 }
 
 module "networking" {
@@ -23,6 +23,7 @@ module "networking" {
   resource_group_name = "aks-networking-resource-group"
   location = "UK West"
   vnet_address_space = ["10.0.0.0/16"]
+  secure_address       = var.secure_address
 }
 
 module "aks_cluster" {
@@ -32,8 +33,8 @@ module "aks_cluster" {
     cluster_location                 =  "UK West"
     dns_prefix                       = "myaks-project"
     kubernetes_version               = "1.27.3"
-    service_principal_client_id      = ""
-    service_principal_client_secret  = ""
+    service_principal_client_id      = var.AZ_service_principal_client_id
+    service_principal_client_secret  = var.AZ_service_principal_client_secret_id
 
 
     resource_group_name     = module.networking.resource_group_name
@@ -43,3 +44,6 @@ module "aks_cluster" {
     aks_nsg_id              = module.networking.aks_nsg_id
     
 }
+
+
+
