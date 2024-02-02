@@ -14,3 +14,8 @@ variable "vnet_address_space" {
   description = "The name of the vnet address space."
   type        = list(string)
 }
+
+variable "secure_address" {
+  description = "The name of the secure address space."
+  type        = string
+}
