@@ -5,13 +5,14 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 import pyodbc
 import os
+from azure.identity import ManagedIdentityCredential
+from azure.keyvault.secrets import SecretClient
 
 # Initialise Flask App
 app = Flask(__name__)
 
 # database connection 
-from azure.identity import ManagedIdentityCredential
-from azure.keyvault.secrets import SecretClient
+
 
 # Replace these values with your Key Vault details
 key_vault_url = "https://AKS-Devops-KeyVault.vault.azure.net/"
@@ -27,6 +28,7 @@ secret = secret_client.get_secret("secret-name")
 secret_value = secret.value
 
 # Create the engine to connect to the database
+connection_string = f"Driver={{ODBC Driver 17 for SQL Server}};Server=your_server;Database=your_database;Uid=your_username;Pwd={secret_value};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;"
 engine = create_engine("mssql+pyodbc:///?odbc_connect={}".format(connection_string))
 engine.connect()
 
